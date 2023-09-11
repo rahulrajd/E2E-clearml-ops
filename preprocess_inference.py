@@ -2,9 +2,9 @@ from typing import Any
 import pandas as pd
 import numpy as np
 from clearml import Task,Model
-
+from config import *
 import joblib
-PROJECT_NAME = "Loan Approval V3"
+
 # Notice Preprocess class Must be named "Preprocess"
 class Preprocess(object):
     def __init__(self):
