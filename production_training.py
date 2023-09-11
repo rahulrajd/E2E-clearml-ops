@@ -51,8 +51,8 @@ if __name__ == "__main__":
     pipe.set_default_execution_queue('default')
     pipe.add_parameter('trails', 3)
     pipe.add_parameter("query","SELECT * FROM loan_dataframe")
-    pipe.add_parameter("branch_name","test5")
-    pipe.add_parameter("create_branch",False)
+    pipe.add_parameter("branch_name","pipeline_cicd_check")
+    pipe.add_parameter("create_branch",True)
 
     pipe.add_step(
         name='ingest_data',
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     )
 
     # for debugging purposes use local jobs
-    #pipe.start_locally(run_pipeline_steps_locally=True)
+    pipe.start_locally(run_pipeline_steps_locally=True)
     # Starting the pipeline (in the background)
-    pipe.start(queue="default")
+    #pipe.start(queue="default")
 
