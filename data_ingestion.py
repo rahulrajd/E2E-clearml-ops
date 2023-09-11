@@ -18,7 +18,7 @@ def data_query(query):
         loan_dataframe = df.copy()
         data_fetched = sqldf(query=query)
         data_fetched.to_csv(out_data_file,index=False)
-        #data_fetched.drop(columns=["Loan_Status"]).to_parquet(parquet_file)
+        data_fetched.drop(columns=["Loan_Status"]).to_parquet(parquet_file)
         return data_fetched,out_data_file,parquet_file
     except:
         raise ValueError("SQL Process failed")

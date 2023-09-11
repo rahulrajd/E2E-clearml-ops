@@ -1,3 +1,5 @@
+import os
+import subprocess
 from platform import node
 from clearml import Task
 from clearml.automation import PipelineController
@@ -26,6 +28,22 @@ def compare_metrics_and_publish_best(**kwargs):
     print(f"Final best model: {current_best}")
     OutputModel(name="best_pipeline_model", base_model_id=current_best.get('model_id'), tags=['best_model'])
 
+def push_to_git(branch_name):
+    import os
+    def execute_run(cmd, dir):
+        import subprocess
+        pipe = subprocess.Popen(cmd, shell=True, cwd=dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (out, error) = pipe.communicate()
+        print(out, error)
+        pipe.wait()
+    cwd = os.getcwd()
+    execute_run("git status",cwd)
+    execute_run(f"git checkout -b {branch_name}",cwd)
+    execute_run("git add .",cwd)
+    execute_run("git commit -m 'test'",cwd)
+    execute_run(f"git push --set-upstream origin {branch_name}",cwd)
+    print("Repository action completed")
+
 if __name__ == "__main__":
     pipe = PipelineController(
         name=PIPELINE_NAME,
@@ -36,6 +54,7 @@ if __name__ == "__main__":
     pipe.set_default_execution_queue('default')
     pipe.add_parameter('trails', 3)
     pipe.add_parameter("query","SELECT * FROM loan_dataframe")
+    pipe.add_parameter("branch_name","test5")
 
     pipe.add_step(
         name='ingest_data',
@@ -47,6 +66,7 @@ if __name__ == "__main__":
         parents=['ingest_data'],
         base_task_project=PROJECT_NAME,
         base_task_name='preprocess_data',
+        parameter_override= {'General/query': pipe.get_parameters()["query"]}
     )
     training_nodes = []
     for i in range(pipe.get_parameters()['trails']):
@@ -69,10 +89,15 @@ if __name__ == "__main__":
         function_kwargs={node_name: '${%s.id}' % node_name for node_name in training_nodes},
         monitor_models=["best_pipeline_model"]
     )
+    pipe.add_function_step(
+        name="push_remote",
+        parents=["select_best_model"],
+        function=push_to_git,
+        function_kwargs={"branch_name":pipe.get_parameters()["branch_name"]}
+    )
 
     # for debugging purposes use local jobs
     pipe.start_locally(run_pipeline_steps_locally=True)
     # Starting the pipeline (in the background)
-    # pipe.start()
+    #pipe.start()
 
-    print('Done!')

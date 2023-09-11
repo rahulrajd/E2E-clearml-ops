@@ -22,7 +22,7 @@ dataset = Dataset.get(
 data_file = dataset.get_local_copy()
 print(f"Using dataset ID: {dataset.id}")
 
-loan_data = pd.read_csv(data_file+"/load_data_ingested.csv")
+loan_data = pd.read_csv(data_file+"/loan_data_ingested.csv")
 preprocessed_dataset = Dataset.create(
     dataset_name="preprocessed_data",
     dataset_project=config.PROJECT_NAME,
