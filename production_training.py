@@ -41,7 +41,7 @@ def push_to_git(branch_name= None):
     execute_run(f"git checkout -b {branch_name}",cwd)
     execute_run("git add .",cwd)
     execute_run("git commit -m 'test'",cwd)
-    execute_run("git push ",cwd)
+    execute_run(f"git push --set-upstream origin {branch_name}",cwd)
 
 
 
