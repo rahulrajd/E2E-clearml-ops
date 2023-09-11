@@ -97,4 +97,4 @@ if __name__ == "__main__":
     pipe.start()
 
     print('Done!')"""
-    push_to_git("test")
+    push_to_git("test_2")
