@@ -3,7 +3,7 @@ import time
 from clearml import Task
 
 
-def check_task_status(task_id, timeout=30):
+def check_task_status(task_id, timeout=600):
     task = Task.get_task(task_id=task_id)
     start_time = time.time()
     if task:
