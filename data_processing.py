@@ -28,6 +28,7 @@ preprocessed_dataset = Dataset.create(
     dataset_project=config.PROJECT_NAME,
     parent_datasets=[dataset.id]
 )
+
 #EDA process
 loan_data.drop(columns=["Loan_ID","date"],inplace=True)
 print(loan_data.describe())
@@ -47,11 +48,14 @@ numerical_columns = pd.DataFrame(SimpleImputer(strategy="mean").fit_transform(nu
 
 encoder = ce.OneHotEncoder()
 category_df = encoder.fit_transform(category_columns)
+
 target_encoding_df = loan_data['Loan_Status'].map({"Y":1,"N":0})
 final_dataset = pd.DataFrame(pd.concat([category_df,numerical_columns,target_encoding_df],axis=1))
 final_dataset.to_csv("data/processed_data.csv",index=False)
 dump(encoder,"data/encoder.joblib")
-task.upload_artifact(name='categorical_encoder', artifact_object='data/encoder.joblib')
+task.upload_artifact(name='categorical_encoder', artifact_object=encoder)
+task.upload_artifact(name='preprocessed_data',artifact_object=final_dataset)
+
 preprocessed_dataset.add_files("data/processed_data.csv")
 preprocessed_dataset.finalize(auto_upload=True)
 print(f"Created preprocessed dataset with ID: {preprocessed_dataset.id}")

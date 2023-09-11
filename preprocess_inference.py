@@ -34,8 +34,8 @@ class Preprocess(object):
         # data is the return value from model.predict we will put is inside a return value as Y
         return dict(y=data)
 
-"""
+
 if __name__ == "__main__":
     payload = {"Gender": ["Male"], "Married": ["Yes"], "Dependents": [0], "Education": ["Graduate"], "Self_Employed": ["Yes"], "ApplicantIncome": [0], "CoapplicantIncome": [0], "LoanAmount": [0], "Loan_Amount_Term": [24], "Credit_History": [1], "Property_Area": ["Urban"]}
     c = Preprocess()
-    c.preprocess(body=payload)"""
+    c.preprocess(body=payload)

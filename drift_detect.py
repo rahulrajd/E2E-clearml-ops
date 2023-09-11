@@ -24,9 +24,9 @@ def check_drift():
 
     report.run(reference_data=train_df, current_data=batch_df)
     if report.as_dict()["metrics"][0]["result"]["dataset_drift"]:
-        task = Task.get_task(task_id="c407df35b0074ebf8150993e7bbac8c6")
-        cloned_task = Task.clone(source_task=task,name="re-trigger training")
-        Task.enqueue(cloned_task.id,queue_name="default")
+        task = Task.get_task(task_name=PIPELINE_NAME,project_name=PROJECT_NAME)
+        cloned_task = Task.clone(source_task=task,name="re-trigger_training")
+        Task.enqueue(cloned_task.id,queue_name="services")
 
 
 from clearml.automation import TaskScheduler
@@ -46,4 +46,6 @@ scheduler.add_task(
     minute=30,
     execute_immediately=True
 )
+
+scheduler.start_remotely(queue="triggers")
 scheduler.start()
