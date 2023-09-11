@@ -17,7 +17,6 @@ jobs:
       CLEARML_API_ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
       CLEARML_API_SECRET_KEY: ${{ secrets.SECRET_KEY }}
       CLEARML_API_HOST: ${{ secrets.CLEARML_API_HOST }}
-      GH_TOKEN: ${{ secrets.GH_TOKEN }
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
