@@ -1,7 +1,7 @@
 import time
 import random
 from clearml import Task
-from tqdm import tqdm
+
 
 import config
 
