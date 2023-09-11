@@ -9,10 +9,10 @@ from config import *
 import pandas as pd
 
 def check_drift():
-    train_df = pd.read_csv("data/load_data_ingested.csv")
+    train_df = pd.read_csv("data/loan_data_ingested.csv")
     batch_df = pd.read_csv("data/ref_data_drift.csv")
 
-    train_df = train_df.drop(["Loan_ID","Loan_Status"],axis=1)
+    train_df = train_df.drop(["Loan_ID","Loan_Status","date"],axis=1)
     batch_df = batch_df.drop(["Loan_ID"],axis=1)
 
     #adding noise to simulate data drift
@@ -24,7 +24,7 @@ def check_drift():
 
     report.run(reference_data=train_df, current_data=batch_df)
     if report.as_dict()["metrics"][0]["result"]["dataset_drift"]:
-        task = Task.get_task(task_name=PIPELINE_NAME,project_name=PROJECT_NAME)
+        task = Task.get_task(task_id="b1c94a6fbbef4b05b9079b77447b0371",project_name=PROJECT_NAME)
         cloned_task = Task.clone(source_task=task,name="re-trigger_training")
         Task.enqueue(cloned_task.id,queue_name="services")
 
@@ -47,5 +47,5 @@ scheduler.add_task(
     execute_immediately=True
 )
 
-scheduler.start_remotely(queue="triggers")
+#scheduler.start_remotely(queue="triggers")
 scheduler.start()
