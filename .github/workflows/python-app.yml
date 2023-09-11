@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  test-remote-runnable:
+  check-remote-execution:
     env:
       CLEARML_API_ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
       CLEARML_API_SECRET_KEY: ${{ secrets.SECRET_KEY }}
