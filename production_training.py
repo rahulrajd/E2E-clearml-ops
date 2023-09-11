@@ -1,3 +1,5 @@
+import os
+import subprocess
 from platform import node
 from clearml import Task
 from clearml.automation import PipelineController
@@ -26,8 +28,26 @@ def compare_metrics_and_publish_best(**kwargs):
     print(f"Final best model: {current_best}")
     OutputModel(name="best_pipeline_model", base_model_id=current_best.get('model_id'), tags=['best_model'])
 
+def execute_run(cmd,dir):
+    import subprocess
+    pipe = subprocess.Popen(cmd,shell=True,cwd=dir, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    (out, error) = pipe.communicate()
+    print(out, error)
+    pipe.wait()
+
+def push_to_git(branch_name= None):
+    cwd = os.getcwd()
+    execute_run("git status",cwd)
+    execute_run(f"git checkout -b {branch_name}",cwd)
+    execute_run("git add .",cwd)
+    execute_run("git commit -m 'test'",cwd)
+    execute_run("git push ",cwd)
+
+
+
+
 if __name__ == "__main__":
-    pipe = PipelineController(
+    """pipe = PipelineController(
         name=PIPELINE_NAME,
         project=PROJECT_NAME,
         version='0.0.1'
@@ -67,12 +87,14 @@ if __name__ == "__main__":
         parents=training_nodes,
         function=compare_metrics_and_publish_best,
         function_kwargs={node_name: '${%s.id}' % node_name for node_name in training_nodes},
-        monitor_models=["best_pipeline_model"]
+        monitor_models=["best_pipeline_model"],
+        post_execute_callback=
     )
 
     # for debugging purposes use local jobs
-    pipe.start_locally(run_pipeline_steps_locally=True)
+    #pipe.start_locally(run_pipeline_steps_locally=True)
     # Starting the pipeline (in the background)
-    # pipe.start()
+    pipe.start()
 
-    print('Done!')
+    print('Done!')"""
+    push_to_git("test")
