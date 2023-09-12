@@ -1,7 +1,7 @@
 from fastapi import FastAPI,Request
 import uvicorn
 from preprocess_inference import Preprocess
-from clearml import Task
+from clearml import Task,Model
 from config import *
 app = FastAPI(debug=True)
 import joblib
@@ -32,7 +32,7 @@ async def check_payload(payload:Request):
 
 if __name__ == "__main__":
     task = Task.get_task(project_name=PROJECT_NAME,task_name="model_training")
-    model = joblib.load(task.get_models()["output"][0].get_local_copy())
+    model = joblib.load(Model(model_id="bc5f742614aa4bb0baf68523244c5f2c").get_local_copy())
     explainer = shap.TreeExplainer(model)
     pre = Preprocess()
     uvicorn.run(app,port=5010)

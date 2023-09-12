@@ -27,9 +27,16 @@ task = Task.init(project_name=config.PROJECT_NAME,task_name="data_ingestion",tas
 query_parameter = {"query":"SELECT * FROM loan_dataframe"}
 task.connect(query_parameter)
 
-#s = 'SELECT * FROM loan_dataframe WHERE strftime("%Y-%m-%d", `date`) <= strftime("%Y-%m-%d", "2022-02-01")'
-load_dataset,loan_dataset_path,parquet_path = data_query(query=query_parameter["query"])
 
+#s = 'SELECT * FROM loan_dataframe WHERE strftime("%Y-%m-%d", `date`) <= strftime("%Y-%m-%d", "2022-02-01")'
+loan_dataset,loan_dataset_path,parquet_path = data_query(query=query_parameter["query"])
+task.get_logger().report_text(query_parameter["query"])
+task.get_logger().report_table(
+    title="Snapshot of ingested data",
+    series="Dataframe",
+    iteration=0,
+    table_plot=loan_dataset.head(5)
+)
 dataset = Dataset.create(dataset_name=config.INGESTED_DATASET_NAME,dataset_project=config.PROJECT_NAME)
 dataset.add_files(
     loan_dataset_path
@@ -37,7 +44,7 @@ dataset.add_files(
 dataset.add_files(
     parquet_path
 )
-dataset.get_logger().report_table(title="Initial Dataset for Loan Application",series="head",table_plot=load_dataset.head(10))
+dataset.get_logger().report_table(title="Initial Dataset for Loan Application",series="head",table_plot=loan_dataset.head(10))
 
 dataset.finalize(auto_upload=True)
 
