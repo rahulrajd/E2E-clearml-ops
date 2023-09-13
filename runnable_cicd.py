@@ -11,14 +11,11 @@ def check_task_status(task_id, timeout=600):
             task_status = task.get_status()
             print(task_status)
             print(task.get_last_iteration())
-
             if task_status == 'queued':
-                # If queued, just reset the timeout timer
                 start_time = time.time()
             if task_status in ['failed', 'stopped']:
                 raise ValueError("Task did not run correctly, check logs in webUI.")
             elif task_status in ['completed','in-progress']:
-                # Try to get the first iteration metric
                 if task.get_last_iteration() > 0:
                     task.mark_stopped()
                     task.set_archived(True)
