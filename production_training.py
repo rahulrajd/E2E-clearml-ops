@@ -51,7 +51,7 @@ if __name__ == "__main__":
     pipe.set_default_execution_queue('default')
     pipe.add_parameter('trails', 3)
     pipe.add_parameter("query","SELECT * FROM loan_dataframe")
-    pipe.add_parameter("branch_name","pipeline_cicd_check")
+    pipe.add_parameter("branch_name","pipeline_cicd_check_new")
     pipe.add_parameter("create_branch",True)
 
     pipe.add_step(

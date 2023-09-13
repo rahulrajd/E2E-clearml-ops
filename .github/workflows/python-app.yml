@@ -33,7 +33,7 @@ jobs:
         id: launch_task
         run: |
           echo "TASK_ID=$(
-            clearml-task --project 'Loan Approval V7' --name cicd_test --branch ${{ github.head_ref }} --script ci_cd_check_task.py --requirements cicd_requirements.txt --skip-task-init --queue cicd_queue | rg -o 'Task id=(.*) sent' -r '$1'
+            clearml-task --project 'Loan Approval V8' --name cicd_test --branch ${{ github.head_ref }} --script ci_cd_check_task.py --requirements cicd_requirements.txt --skip-task-init --queue cicd_queue | rg -o 'Task id=(.*) sent' -r '$1'
           )" >> $GITHUB_OUTPUT
       - name: Poll for task progress
         run: python runnable_cicd.py "${{ steps.launch_task.outputs.TASK_ID }}"
